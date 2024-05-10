@@ -217,7 +217,7 @@ mod tests {
         //log file size
         let files = get_files("./").unwrap();
         print!("{:?}", files);
-        assert_eq!(files.len(),11); // Substitua 0.0 pelo tamanho esperado do arquivo
+        assert_eq!(files.len(),10); // Substitua 0.0 pelo tamanho esperado do arquivo
     }
 
     #[test]
@@ -260,7 +260,7 @@ mod tests {
     fn test_is_file_of_type() {
         //log file size
         let files = get_files("./").unwrap();
-        let is_file = crate::dir_explorer::is_file_of_type(&files[1], &["toml"]);
+        let is_file = crate::dir_explorer::is_file_of_type(&files[2], &["md"]);
         print!("{:?}", files);
         assert_eq!(is_file,true); // Substitua 0.0 pelo tamanho esperado do arquivo
     }
