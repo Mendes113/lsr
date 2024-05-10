@@ -69,4 +69,4 @@ To make lsr easily accessible from anywhere in your terminal, you can add the bi
    ```bash
    sudo cp lsr /usr/local/bin
 
-3. Once the binary is copied, you can run lsr from any directory in your terminal by simply typing directory-explorer followed by the desired arguments.
+3. Once the binary is copied, you can run lsr from any directory in your terminal by simply typing lsr  followed by the desired arguments.
