@@ -58,9 +58,9 @@ cargo run lsz -t -b
 
 
 
-**Adding Binary to PATH in Linux:**
+## Examples **Adding Binary to PATH in Linux:**
 
-To make Directory Explorer easily accessible from anywhere in your terminal, you can add the binary to your PATH environment variable. Follow these steps:
+To make lsr easily accessible from anywhere in your terminal, you can add the binary to your PATH environment variable. Follow these steps:
 
 1. Navigate to the directory containing the `lsr` binary.
 
@@ -69,5 +69,4 @@ To make Directory Explorer easily accessible from anywhere in your terminal, you
    ```bash
    sudo cp lsr /usr/local/bin
 
-
-3. Once the binary is copied, you can run Directory Explorer from any directory in your terminal by simply typing directory-explorer followed by the desired arguments.
+3. Once the binary is copied, you can run lsr from any directory in your terminal by simply typing directory-explorer followed by the desired arguments.
