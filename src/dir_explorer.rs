@@ -121,6 +121,7 @@ fn file_size(file_path: &str) -> Result<f32, std::io::Error> {
     let size_mb = convert_bytes_to_mb(size);
     Ok(size_mb)
 }
+
 fn total_file_size(file_path: &str) -> Result<f32, std::io::Error> {
     let files = get_files(file_path)?;
     let mut total_size = 0.0;
@@ -130,46 +131,47 @@ fn total_file_size(file_path: &str) -> Result<f32, std::io::Error> {
     }
     Ok(total_size)
 }
+
 fn convert_bytes_to_mb(bytes: u64) -> f32 {
     bytes as f32 / 1024.0 / 1024.0
 }
-fn get_most_large_file(file_path: &str) -> Result<String, std::io::Error> {
-    let files = get_files(file_path)?;
-    let mut largest_file = String::new();
-    let mut largest_size = 0.0; // Change the type to f32
-    for file_name in files {
-        let size = file_size(&file_name)?;
-        if size > largest_size {
-            largest_size = size;
-            largest_file = file_name;
-        }
-    }
-    Ok(largest_file)
-}
-fn get_most_small_file(file_path: &str) -> Result<String, std::io::Error> {
-    let files = get_files(file_path)?;
-    let mut smallest_file = String::new();
-    let mut smallest_size = std::f32::MAX; // Change the type to f32
-    for file_name in files {
-        let size = file_size(&file_name)?;
-        if size < smallest_size {
-            smallest_size = size;
-            smallest_file = file_name;
-        }
-    }
-    Ok(smallest_file)
-}
-fn get_number_of_files_max(file_path: &str,number: u32) -> Result<usize, std::io::Error> {
-    let files = get_files(file_path)?;
-    let mut number_of_files = 0;
-    for file_name in files {
-        let size = file_size(&file_name)?;
-        if size > number as f32 {
-            number_of_files += 1;
-        }
-    }
-    Ok(number_of_files)
-}
+// fn get_most_large_file(file_path: &str) -> Result<String, std::io::Error> {
+//     let files = get_files(file_path)?;
+//     let mut largest_file = String::new();
+//     let mut largest_size = 0.0; // Change the type to f32
+//     for file_name in files {
+//         let size = file_size(&file_name)?;
+//         if size > largest_size {
+//             largest_size = size;
+//             largest_file = file_name;
+//         }
+//     }
+//     Ok(largest_file)
+// }
+// fn get_most_small_file(file_path: &str) -> Result<String, std::io::Error> {
+//     let files = get_files(file_path)?;
+//     let mut smallest_file = String::new();
+//     let mut smallest_size = std::f32::MAX; // Change the type to f32
+//     for file_name in files {
+//         let size = file_size(&file_name)?;
+//         if size < smallest_size {
+//             smallest_size = size;
+//             smallest_file = file_name;
+//         }
+//     }
+//     Ok(smallest_file)
+// }
+// fn get_number_of_files_max(file_path: &str,number: u32) -> Result<usize, std::io::Error> {
+//     let files = get_files(file_path)?;
+//     let mut number_of_files = 0;
+//     for file_name in files {
+//         let size = file_size(&file_name)?;
+//         if size > number as f32 {
+//             number_of_files += 1;
+//         }
+//     }
+//     Ok(number_of_files)
+// }
 fn order_top_files(file_path: &str) -> Result<Vec<String>, std::io::Error> {
     let files = get_files(file_path)?;
     let mut files_and_sizes = Vec::new();
@@ -193,3 +195,132 @@ fn order_bottom_files(file_path: &str) -> Result<Vec<String>, std::io::Error> {
     Ok(bottom_files)
 }
 // fn total_file_size
+
+
+
+
+#[cfg(test)]
+mod tests {
+   
+    use crate::dir_explorer::{file_size, get_files, order_bottom_files, order_top_files};
+
+
+    #[test]
+    fn test_file_size() {
+        //log file size
+        let size = file_size("das.jpg").unwrap();
+        assert_eq!(size, 0.0); // Substitua 0.0 pelo tamanho esperado do arquivo
+    }
+
+    #[test]
+    fn test_get_files() {
+        //log file size
+        let files = get_files("./").unwrap();
+        print!("{:?}", files);
+        assert_eq!(files.len(),11); // Substitua 0.0 pelo tamanho esperado do arquivo
+    }
+
+    #[test]
+    fn test_order_top_files() {
+        //log file size
+        let files = order_top_files("./").unwrap();
+        print!("{:?}", files);
+       //verifica se o primeiro arquvivo é o maior
+        assert_eq!(files[0],"lsr"); // Substitua 0.0 pelo tamanho esperado do arquivo
+    }
+
+    #[test]
+    fn test_order_bottom_files() {
+        //log file size
+        let files = order_bottom_files("./").unwrap();
+        print!("{:?}", files);
+       //verifica se o primeiro arquvivo é o maior
+        assert_eq!(files[0],"das.jpg"); // Substitua 0.0 pelo tamanho esperado do arquivo
+    }
+
+    #[test]
+    fn test_most_large_file() {
+        //log file size
+        let files = order_top_files("./").unwrap();
+        print!("{:?}", files);
+       //verifica se o primeiro arquvivo é o maior
+        assert_eq!(files[0],"lsr"); // Substitua 0.0 pelo tamanho esperado do arquivo
+    }
+
+    #[test]
+    fn test_most_small_file() {
+        //log file size
+        let files = order_bottom_files("./").unwrap();
+        print!("{:?}", files);
+       //verifica se o primeiro arquvivo é o maior
+        assert_eq!(files[0],"das.jpg"); // Substitua 0.0 pelo tamanho esperado do arquivo
+    }
+
+    #[test]
+    fn test_is_file_of_type() {
+        //log file size
+        let files = get_files("./").unwrap();
+        let is_file = crate::dir_explorer::is_file_of_type(&files[1], &["toml"]);
+        print!("{:?}", files);
+        assert_eq!(is_file,true); // Substitua 0.0 pelo tamanho esperado do arquivo
+    }
+
+
+#[test]
+fn test_total_file_size() {
+    let size = crate::dir_explorer::total_file_size("./").unwrap();
+    println!("{:?}", size);
+
+    let expected_size = 0.4831;
+    let tolerance = 0.1; 
+    let lower_bound = expected_size - tolerance;
+    let upper_bound = expected_size + tolerance;
+    print!("{:?}", size);
+    assert!(size >= lower_bound && size <= upper_bound);
+}
+
+
+#[test]
+fn test_show_files_and_size() {
+    
+    let result = crate::dir_explorer::show_files_and_size("./", true, "");
+    
+    // verify if the function ran successfully
+    assert!(result.is_ok());
+}
+
+
+#[test]
+fn test_show_files_and_size_of_a_type() {
+    
+    let result = crate::dir_explorer::show_files_and_size_of_a_type("./", true, "", &["toml"]);
+    
+    // verify if the function ran successfully
+    assert!(result.is_ok());
+
+}
+
+
+
+#[test]
+fn test_explore_dir() {
+    
+    let result = crate::dir_explorer::explore_dir("./", &["toml"], "", true);
+    
+    // verify if the function ran successfully
+    assert!(result.is_ok());
+}
+
+//explore dir with no file type
+
+#[test]
+fn test_explore_dir_no_file_type() {
+    
+    let result = crate::dir_explorer::explore_dir("./", &[], "", true);
+    
+    // verify if the function ran successfully
+    assert!(result.is_ok());
+
+}
+
+}
