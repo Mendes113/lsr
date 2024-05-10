@@ -1,6 +1,6 @@
-# Directory Explorer
+# lsr
 
-Directory Explorer is a simple command-line tool written in Rust for listing and exploring files in a directory. It allows you to list all files or filter them by type, and optionally sort them by size.
+lsr is a simple command-line tool written in Rust for listing and exploring files in a directory. It allows you to list all files or filter them by type, and optionally sort them by size.
 
 ## Features
 
