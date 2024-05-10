@@ -16,7 +16,7 @@ Directory Explorer is a simple command-line tool written in Rust for listing and
 
 ## Usage
 
-To use the Directory Explorer, follow these steps:
+To use the lsr, follow these steps:
 
 1. Clone the repository:
 
@@ -55,3 +55,19 @@ List all .txt files in the current directory:
 ```bash
 cargo run lsz -t -b
 ```
+
+
+
+**Adding Binary to PATH in Linux:**
+
+To make Directory Explorer easily accessible from anywhere in your terminal, you can add the binary to your PATH environment variable. Follow these steps:
+
+1. Navigate to the directory containing the `lsr` binary.
+
+2. Copy the binary to a directory that is already in your PATH, such as `/usr/local/bin`. You may need superuser privileges to copy files to this directory. Use the following command:
+
+   ```bash
+   sudo cp lsr /usr/local/bin
+
+
+3. Once the binary is copied, you can run Directory Explorer from any directory in your terminal by simply typing directory-explorer followed by the desired arguments.
