@@ -2,18 +2,26 @@
 /// .
 use std::fs;
 // A função para listar os arquivos
-pub fn list_files(dir_path: &str, file_type: Option<&str>, order_by_size: &str, show_size: bool) {
-    // Verifica se o tipo de arquivo foi especificado
+pub fn list_files(mut dir_path: &str, file_type: &str, order_by_size: &str, show_size: bool) {
+    if dir_path.is_empty() {
+       dir_path = ".";
+    }
+
+    print!("Diretório: {}\n", dir_path);
+    print!("Tipo de arquivo: {}\n", file_type);
+    print!("Ordenar por tamanho: {}\n", order_by_size);
+    print!("Mostrar tamanho: {}\n", show_size);
+
     match file_type {
-        Some(ft) => {
-            println!("Listando arquivos de tipo '{}':", ft);
-            let extensions = if !ft.is_empty() { vec![ft] } else { Vec::new() };
+        file_type if !file_type.is_empty() => {
+            println!("Listando arquivos de tipo '{}':", file_type);
+            let extensions = vec![file_type];
             if let Err(e) = explore_dir(dir_path, &extensions, order_by_size, show_size) {
                 println!("Erro ao explorar diretório: {}", e);
                 return; // Retorna imediatamente em caso de erro
             }
         }
-        None => {
+        _ => {
             println!("Listando todos os arquivos:");
             if let Err(e) = explore_dir(dir_path, &[], order_by_size, show_size) {
                 println!("Erro ao explorar diretório: {}", e);
@@ -22,6 +30,8 @@ pub fn list_files(dir_path: &str, file_type: Option<&str>, order_by_size: &str, 
         }
     }
 }
+
+
 // Função para explorar o diretório e listar arquivos
 fn explore_dir(file_path: &str, file_extensions: &[&str],order_by_size: &str, show_size: bool) -> Result<(), std::io::Error> {
 
@@ -44,7 +54,7 @@ fn show_files_and_size(file_path: &str,show_size: bool, order_by_size: &str) -> 
                 for file_name in files {
                     let size = file_size(&file_name)?;
                     println!("Arquivo: {}, Tamanho: {} mb", file_name, size);
-                   
+
                 }
             }
         }
@@ -55,8 +65,8 @@ fn show_files_and_size(file_path: &str,show_size: bool, order_by_size: &str) -> 
                 for file_name in files {
                     let size = file_size(&file_name)?;
                     println!("Arquivo: {}, Tamanho: {} mb", file_name, size);
-                
-                   
+
+
                 }
             }
         }
@@ -67,7 +77,7 @@ fn show_files_and_size(file_path: &str,show_size: bool, order_by_size: &str) -> 
                 for file_name in files {
                     let size = file_size(&file_name)?;
                     println!("Arquivo: {}, Tamanho: {} mb", file_name, size);
-                } 
+                }
             }else {
                 for file_name in files {
                     println!("Arquivo: {}", file_name);
@@ -76,7 +86,7 @@ fn show_files_and_size(file_path: &str,show_size: bool, order_by_size: &str) -> 
         }
     }
 
-   
+
     Ok(())
 }
 fn show_files_and_size_of_a_type(file_path: &str, show_size: bool, order_by_size: &str, file_extensions: &[&str]) -> Result<(), std::io::Error> {
@@ -201,7 +211,7 @@ fn order_bottom_files(file_path: &str) -> Result<Vec<String>, std::io::Error> {
 
 #[cfg(test)]
 mod tests {
-   
+
     use crate::dir_explorer::{file_size, get_files, order_bottom_files, order_top_files};
 
 
@@ -272,7 +282,7 @@ fn test_total_file_size() {
     println!("{:?}", size);
 
     let expected_size = 0.4831;
-    let tolerance = 0.1; 
+    let tolerance = 0.1;
     let lower_bound = expected_size - tolerance;
     let upper_bound = expected_size + tolerance;
     print!("{:?}", size);
@@ -282,9 +292,9 @@ fn test_total_file_size() {
 
 #[test]
 fn test_show_files_and_size() {
-    
+
     let result = crate::dir_explorer::show_files_and_size("./", true, "");
-    
+
     // verify if the function ran successfully
     assert!(result.is_ok());
 }
@@ -292,9 +302,9 @@ fn test_show_files_and_size() {
 
 #[test]
 fn test_show_files_and_size_of_a_type() {
-    
+
     let result = crate::dir_explorer::show_files_and_size_of_a_type("./", true, "", &["toml"]);
-    
+
     // verify if the function ran successfully
     assert!(result.is_ok());
 
@@ -304,9 +314,9 @@ fn test_show_files_and_size_of_a_type() {
 
 #[test]
 fn test_explore_dir() {
-    
+
     let result = crate::dir_explorer::explore_dir("./", &["toml"], "", true);
-    
+
     // verify if the function ran successfully
     assert!(result.is_ok());
 }
@@ -315,9 +325,9 @@ fn test_explore_dir() {
 
 #[test]
 fn test_explore_dir_no_file_type() {
-    
+
     let result = crate::dir_explorer::explore_dir("./", &[], "", true);
-    
+
     // verify if the function ran successfully
     assert!(result.is_ok());
 
