@@ -2,7 +2,7 @@
 /// .
 use std::fs;
 // A função para listar os arquivos
-pub fn list_files(mut dir_path: &str, file_type: &str, order_by_size: &str, show_size: bool) {
+pub fn list_files(mut dir_path: &str, file_type: &str, order_by_size: &str, show_size: bool, delete: bool) {
     if dir_path.is_empty() {
        dir_path = ".";
     }
@@ -16,6 +16,12 @@ pub fn list_files(mut dir_path: &str, file_type: &str, order_by_size: &str, show
         file_type if !file_type.is_empty() => {
             println!("Listando arquivos de tipo '{}':", file_type);
             let extensions = vec![file_type];
+            if(delete){
+                if let Err(e) = delete_file_type(dir_path, &extensions) {
+                    println!("Erro ao deletar arquivos: {}", e);
+                    return; // Retorna imediatamente em caso de erro
+                }
+            }
             if let Err(e) = explore_dir(dir_path, &extensions, order_by_size, show_size) {
                 println!("Erro ao explorar diretório: {}", e);
                 return; // Retorna imediatamente em caso de erro
@@ -29,6 +35,7 @@ pub fn list_files(mut dir_path: &str, file_type: &str, order_by_size: &str, show
             }
         }
     }
+
 }
 
 
@@ -206,7 +213,15 @@ fn order_bottom_files(file_path: &str) -> Result<Vec<String>, std::io::Error> {
 }
 // fn total_file_size
 
-
+fn delete_file_type(file_path: &str, file_extensions: &[&str]) -> Result<(), std::io::Error> {
+    let files = get_files(file_path)?;
+    for file_name in files {
+        if is_file_of_type(&file_name, file_extensions) {
+            fs::remove_file(file_name)?;
+        }
+    }
+    Ok(())
+}
 
 
 #[cfg(test)]

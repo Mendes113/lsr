@@ -33,6 +33,8 @@ pub struct Ls {
     pub file_type: String,
     #[clap(short, long, default_value = "")]
     pub order_by_size: String,
+    #[clap(short, long, default_value = "false")]
+    pub purge: bool,
 }
 
 
@@ -45,6 +47,8 @@ pub struct Lsz {
     pub file_type: Option<String>,
     #[clap(short, long, default_value = "")]
     pub order_by_size: String,
+    #[clap(short, long, default_value = "false")]
+    pub purge: bool,
 }
 
 

@@ -12,14 +12,10 @@ fn main() {
 
     match lsr.subcmd {
         SubCommand::Ls(ls) => {
-            println!("Running 'ls' command with options: {:?}", ls);
-            // Convertendo &str para String
-
-            dir_explorer::list_files(&ls.directory, &ls.file_type, &ls.order_by_size, false);
+            dir_explorer::list_files(&ls.directory, &ls.file_type, &ls.order_by_size, false, ls.purge);
         }
         SubCommand::Lsz(lsz) => {
-            println!("Running 'lsz' command with options: {:?}", lsz);
-            dir_explorer::list_files(&lsz.directory, &lsz.file_type.as_deref().unwrap_or(""), &lsz.order_by_size, true);
+            dir_explorer::list_files(&lsz.directory, &lsz.file_type.as_deref().unwrap_or(""), &lsz.order_by_size, true, lsz.purge);
         }
     }
 }
