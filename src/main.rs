@@ -12,10 +12,10 @@ fn main() {
 
     match lsr.subcmd {
         SubCommand::Ls(ls) => {
-            dir_explorer::list_files(&ls.directory, &ls.file_type, &ls.order_by_size, false, ls.purge);
+            dir_explorer::list_files(&ls.directory, &ls.file_type.as_deref().unwrap_or(""), &ls.order_by_size, false, ls.purge, ls.recursive);
         }
         SubCommand::Lsz(lsz) => {
-            dir_explorer::list_files(&lsz.directory, &lsz.file_type.as_deref().unwrap_or(""), &lsz.order_by_size, true, lsz.purge);
+            dir_explorer::list_files(&lsz.directory, &lsz.file_type.as_deref().unwrap_or(""), &lsz.order_by_size, true, lsz.purge, lsz.recursive);
         }
     }
 }

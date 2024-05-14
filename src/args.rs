@@ -30,11 +30,13 @@ pub struct Ls {
     #[clap(short, long, default_value = ".")]
     pub directory: String,
     #[clap(short, long)]
-    pub file_type: String,
+    pub file_type: Option<String>,
     #[clap(short, long, default_value = "")]
     pub order_by_size: String,
     #[clap(short, long, default_value = "false")]
     pub purge: bool,
+    #[clap(short, long, default_value = "false")]
+    pub recursive: bool,
 }
 
 
@@ -49,6 +51,8 @@ pub struct Lsz {
     pub order_by_size: String,
     #[clap(short, long, default_value = "false")]
     pub purge: bool,
+    #[clap(short, long, default_value = "false")]
+    pub recursive: bool,
 }
 
 
