@@ -8,3 +8,4 @@ path = "src/main.rs"         # Caminho para o arquivo principal do código fonte
 
 
 [dependencies]
+clap = { version = "4.5.4", features = ["derive"] }
