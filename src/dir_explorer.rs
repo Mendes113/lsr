@@ -1,38 +1,38 @@
 //
 /// .
-use std::fs;
+use std::{fs, path::Path};
+
+use colored::Colorize;
 // A função para listar os arquivos
 pub fn list_files(mut dir_path: &str, file_type: &str, order_by_size: &str, show_size: bool, delete: bool,  recursive: bool) {
     if dir_path.is_empty() {
-       dir_path = ".";
+       dir_path = "./";
     }
 
     print!("Diretório: {}\n", dir_path);
     print!("Tipo de arquivo: {}\n", file_type);
     print!("Ordenar por tamanho: {}\n", order_by_size);
     print!("Mostrar tamanho: {}\n", show_size);
-
+    let extensions = vec![file_type];
     match file_type {
         file_type if !file_type.is_empty() => {
             println!("Listando arquivos de tipo '{}':", file_type);
-            let extensions = vec![file_type];
+
             if delete {
                 if let Err(e) = delete_file_type(dir_path, &extensions) {
                     println!("Erro ao deletar arquivos: {}", e);
                     return; // Retorna imediatamente em caso de erro
                 }
             }
-            if let Err(e) = explore_dir(dir_path, &extensions, order_by_size, show_size, recursive) {
-                println!("Erro ao explorar diretório: {}", e);
-                return; // Retorna imediatamente em caso de erro
-            }
         }
         _ => {
             println!("Listando todos os arquivos:");
-            if let Err(e) = explore_dir(dir_path, &[], order_by_size, show_size, recursive) {
+            if let Err(e) = explore_dir(dir_path, &extensions, order_by_size, show_size, recursive) {
                 println!("Erro ao explorar diretório: {}", e);
+
                 return; // Retorna imediatamente em caso de erro
             }
+
         }
     }
 
@@ -43,7 +43,7 @@ pub fn list_files(mut dir_path: &str, file_type: &str, order_by_size: &str, show
 fn explore_dir(file_path: &str, file_extensions: &[&str],order_by_size: &str, show_size: bool, recursive: bool) -> Result<(), std::io::Error> {
 
 
-    if file_extensions.is_empty() {
+    if file_extensions.is_empty() || file_extensions == &[""]{
 
         show_files_and_size(file_path, show_size, order_by_size, recursive)?;
     } else {
@@ -52,71 +52,59 @@ fn explore_dir(file_path: &str, file_extensions: &[&str],order_by_size: &str, sh
 
     Ok(())
 }
-fn show_files_and_size(file_path: &str,show_size: bool, order_by_size: &str, recursive: bool) -> Result<(), std::io::Error> {
-    // let files = get_files(file_path)?;
-   match order_by_size {
+fn show_files_and_size(
+    file_path: &str,
+    show_size: bool,
+    order_by_size: &str,
+    recursive: bool
+) -> Result<(), std::io::Error> {
+    match order_by_size {
         "-b" => {
             let files = order_bottom_files(file_path, recursive)?;
-            let is_show_size = show_size;
-            if is_show_size{
+            if show_size {
                 for file_name in files {
                     let size = file_size(&file_name)?;
-                    println!("Arquivo: {}, Tamanho: {} mb", file_name, size);
-
+                    println!("Arquivo: {}, Tamanho: {} mb", format_file_output(&file_name),format_size_output(size));
+                }
+            } else {
+                for file_name in files {
+                    println!("Arquivo: {}", format_file_output(&file_name));
                 }
             }
         }
         "-t" => {
             let files = order_top_files(file_path, recursive)?;
-            let is_show_size = show_size;
-            if is_show_size{
+            if show_size {
                 for file_name in files {
                     let size = file_size(&file_name)?;
-                    println!("Arquivo: {}, Tamanho: {} mb", file_name, size);
-
-
+                    println!("Arquivo: {}, Tamanho: {} mb", format_file_output(&file_name), format_size_output(size));
+                }
+            } else {
+                for file_name in files {
+                    println!("Arquivo: {}", format_file_output(&file_name));
                 }
             }
         }
         _ => {
             let files = get_files(file_path, recursive)?;
-            let is_show_size = show_size;
-            if is_show_size{
+            if show_size {
                 for file_name in files {
                     let size = file_size(&file_name)?;
-                    println!("Arquivo: {}, Tamanho: {} mb", file_name, size);
+                    println!("Arquivo: {}, Tamanho: {} mb", format_file_output(&file_name), format_size_output(size));
                 }
-            }else {
+            } else {
                 for file_name in files {
-                    println!("Arquivo: {}", file_name);
+                    println!("Arquivo: {}", format_file_output(&file_name));
                 }
             }
         }
     }
 
-
-
     Ok(())
 }
 
 
-fn recursive_dir_explorer(file_path: &str) -> Result<(), std::io::Error> {
-    let paths = fs::read_dir(file_path)?;
-    for path in paths {
-        let path = path?.path();
-        let file_name = path.file_name().unwrap().to_string_lossy().to_string();
-        if path.is_dir() {
-            // Se o nome da pasta começar com '.', continue para a próxima iteração
-            if path.starts_with(".") {
-                continue;
-            }
-            recursive_dir_explorer(&path.to_string_lossy())?;
-        } else {
-            println!("Arquivo: {}", file_name);
-        }
-    }
-    Ok(())
-}
+
 
 
 
@@ -131,9 +119,9 @@ fn show_files_and_size_of_a_type(file_path: &str, show_size: bool, order_by_size
         if is_file_of_type(&file_name, file_extensions) {
             if is_show_size {
                 let size = file_size(&file_name)?;
-                println!("Arquivo: {}, Tamanho: {} mb", file_name, size);
+                println!("Arquivo: {}, Tamanho: {} mb", format_file_output(file_name.as_str()), format_size_output(size));
             } else {
-                println!("Arquivo: {}", file_name);
+                println!("Arquivo: {}", format_file_output(file_name.as_str()));
             }
         }
     }
@@ -147,19 +135,50 @@ fn is_file_of_type(file_name: &str, file_extensions: &[&str]) -> bool {
 }
 
 fn get_files(file_path: &str, recursive: bool) -> Result<Vec<String>, std::io::Error> {
-    let paths = fs::read_dir(file_path)?;
     let mut files = Vec::new();
+    explore_directory(file_path, &mut files, recursive)?;
+    Ok(files)
+}
+
+fn explore_directory(file_path: &str, files: &mut Vec<String>, recursive: bool) -> Result<(), std::io::Error> {
+    let paths = fs::read_dir(file_path)?;
+
     for path in paths {
         let path = path?.path();
-        let file_name = path.file_name().unwrap().to_string_lossy().to_string();
-        if recursive && path.is_dir() {
-            recursive_dir_explorer(&path.to_string_lossy())?;
+        let file_name = path.to_string_lossy().to_string();
+        let starts_with_dot = file_name.starts_with(".");
+
+        if path.is_dir() && !starts_with_dot {
+            if recursive {
+                explore_directory(&file_name, files, recursive)?;
+            }
         } else {
             files.push(file_name);
         }
     }
-    Ok(files)
+
+    Ok(())
 }
+
+
+fn format_file_output(file_name: &str) -> String {
+    let path = Path::new(file_name);
+    if path.is_dir() {
+        file_name.blue().bold().to_string()
+    } else {
+        file_name.green().to_string()
+    }
+}
+
+fn format_size_output(size: f32) -> String {
+    if size > 100.0 {
+        size.to_string().red().bold().to_string()
+    } else {
+        size.to_string().green().to_string()
+    }
+}
+
+
 fn file_size(file_path: &str) -> Result<f32, std::io::Error> {
     let metadata = fs::metadata(file_path)?;
     let size = metadata.len();
