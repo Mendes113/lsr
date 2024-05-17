@@ -36,7 +36,7 @@ To use the lsr, follow these steps:
     cargo run <operation> <options>
     ```
     
-     ```bash
+```bash
 Options:
   -d, --directory <DIRECTORY>          [default: .]
   -f, --file-type <FILE_TYPE>          
@@ -46,30 +46,10 @@ Options:
   -h, --help                           Print help
  ```
  
-    ```
-
-   Replace `<operation>` with either `ls` (to list files) or `lsz` (to list files with sizes).
-   
-   Optional arguments:
-   - `-d <directory>`: Specify the directory to explore (default is current directory).
-   - `<file type>`: Filter files by type (e.g., txt, jpg, png).
-   - `-b` or `-t`: Sort files by size (bottom or top).
-
-## Examples
-
-
- ### Example
-    ```bash
-    cargo run lsr -d /home/username -f txt -o -t
-    ```
-    This command lists all text files in the `/home/username` directory, sorted by size in descending order.
-
-    ```bash
-    cargo run lsz -d /home/username -f jpg -o -b
-    ```
-    This command lists all JPEG files in the `/home/username` directory, sorted by size in ascending order.
     
-    ```bash
+
+
+
 
 
 ## Examples **Adding Binary to PATH in Linux:**
