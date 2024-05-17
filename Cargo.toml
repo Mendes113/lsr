@@ -6,6 +6,9 @@ edition = "2021"
 name = "lsr"  # Nome personalizado para o executável
 path = "src/main.rs"         # Caminho para o arquivo principal do código fonte
 
+[[tests]]
+
+
 
 [dependencies]
 clap = { version = "4.5.4", features = ["derive"] }

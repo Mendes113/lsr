@@ -33,7 +33,19 @@ To use the lsr, follow these steps:
 3. Run the program using Cargo:
 
     ```bash
-    cargo run <operation> [-d <directory>] [<file type>] [-b or -t to list top or bottom size]
+    cargo run <operation> <options>
+    ```
+    
+     ```bash
+Options:
+  -d, --directory <DIRECTORY>          [default: .]
+  -f, --file-type <FILE_TYPE>          
+  -o, --order-by-size <ORDER_BY_SIZE>  [default: ]
+  -p, --purge                          
+  -r, --recursive                      
+  -h, --help                           Print help
+ ```
+ 
     ```
 
    Replace `<operation>` with either `ls` (to list files) or `lsz` (to list files with sizes).
@@ -45,17 +57,19 @@ To use the lsr, follow these steps:
 
 ## Examples
 
-List all files in the current directory:
-```bash
-cargo run ls
-```
 
+ ### Example
+    ```bash
+    cargo run lsr -d /home/username -f txt -o -t
+    ```
+    This command lists all text files in the `/home/username` directory, sorted by size in descending order.
 
-List all .txt files in the current directory:
-```bash
-cargo run lsz -t -b
-```
-
+    ```bash
+    cargo run lsz -d /home/username -f jpg -o -b
+    ```
+    This command lists all JPEG files in the `/home/username` directory, sorted by size in ascending order.
+    
+    ```bash
 
 
 ## Examples **Adding Binary to PATH in Linux:**
