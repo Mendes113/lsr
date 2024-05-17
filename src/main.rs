@@ -1,9 +1,8 @@
 mod lib;
 mod args;
 
-use std::env;
 
-use args::{Ls, Lsr, SubCommand};
+use args::{Lsr, SubCommand};
 // use args::{Args, Ls};
 use clap::Parser;
 
