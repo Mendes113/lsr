@@ -11,10 +11,6 @@ pub fn list_files(
     if dir_path.is_empty() {
         dir_path = ".";
     }
-    print!("Directory: {}\n", dir_path);
-    print!("File  Type: {}\n", file_type);
-    print!("Order By Size: {}\n", order_by_size);
-    print!("Show Size: {}\n", show_size);
     match file_type {
         file_type if !file_type.is_empty() => {
             println!("Listing files by type'{}':", file_type);
@@ -75,7 +71,7 @@ pub fn show_files_and_size(
             if is_show_size {
                 for file_name in files {
                     let size = file_size(&file_name)?;
-                    println!("File: {}, Size: {} mb", file_name, formated_color_by_size(size));
+                    println!("{},{} mb", formated_file_or_dir(&file_name), formated_color_by_size(size));
                 }
             }
         }
@@ -85,7 +81,7 @@ pub fn show_files_and_size(
             if is_show_size {
                 for file_name in files {
                     let size = file_size(&file_name)?;
-                    println!("File: {}, Size: {} mb", file_name, formated_color_by_size(size));
+                    println!("{},  {} mb", formated_file_or_dir(&file_name), formated_color_by_size(size));
                 }
             }
         }
@@ -95,11 +91,11 @@ pub fn show_files_and_size(
             if is_show_size {
                 for file_name in files {
                     let size = file_size(&file_name)?;
-                    println!("File: {}, Size: {} mb", file_name, formated_color_by_size(size));
+                    println!("{}, {} mb", formated_file_or_dir(&file_name), formated_color_by_size(size));
                 }
             } else {
                 for file_name in files {
-                    println!("File: {}", file_name);
+                    println!("{}", formated_file_or_dir(&file_name));
                 }
             }
         }
@@ -118,7 +114,7 @@ pub fn recursive_dir_explorer(file_path: &str) -> Result<(), std::io::Error> {
             }
             recursive_dir_explorer(&path.to_string_lossy())?;
         } else {
-            println!("File: {}", file_name);
+            println!("{}", formated_file_or_dir(&file_name));
         }
     }
     Ok(())
@@ -141,9 +137,9 @@ pub fn show_files_and_size_of_a_type(
         if is_file_of_type(&file_name, file_extensions) {
             if is_show_size {
                 let size = file_size(&file_name)?;
-                println!("File: {}, Size: {} mb", file_name, size);
+                println!("{}, {} mb", formated_file_or_dir(&file_name), formated_color_by_size(size));
             } else {
-                println!("File: {}", file_name);
+                println!(" {}", formated_file_or_dir(&file_name));
             }
         }
     }
@@ -237,6 +233,14 @@ fn formated_color_by_size(size: f32) -> String {
     }
 }
 
+
+fn formated_file_or_dir(file_name: &str) -> String {
+    if file_name.ends_with("/") || file_name.starts_with(".") {
+        file_name.bright_purple().to_string() 
+    } else {
+        file_name.green().to_string()
+    }
+}
 
 fn convert_to_string(size: f32) -> String {
     size.to_string()
