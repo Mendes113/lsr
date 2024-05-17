@@ -1,5 +1,5 @@
+use colored::*;
 use std::fs;
-
 pub fn list_files(
     mut dir_path: &str,
     file_type: &str,
@@ -25,7 +25,8 @@ pub fn list_files(
                     return;
                 }
             }
-            if let Err(e) = explore_dir(dir_path, &extensions, order_by_size, show_size, recursive) {
+            if let Err(e) = explore_dir(dir_path, &extensions, order_by_size, show_size, recursive)
+            {
                 println!("Error Exploring directories : {}", e);
                 return;
             }
@@ -74,7 +75,7 @@ pub fn show_files_and_size(
             if is_show_size {
                 for file_name in files {
                     let size = file_size(&file_name)?;
-                    println!("File: {}, Size: {} mb", file_name, size);
+                    println!("File: {}, Size: {} mb", file_name, formated_color_by_size(size));
                 }
             }
         }
@@ -84,7 +85,7 @@ pub fn show_files_and_size(
             if is_show_size {
                 for file_name in files {
                     let size = file_size(&file_name)?;
-                    println!("File: {}, Size: {} mb", file_name, size);
+                    println!("File: {}, Size: {} mb", file_name, formated_color_by_size(size));
                 }
             }
         }
@@ -94,7 +95,7 @@ pub fn show_files_and_size(
             if is_show_size {
                 for file_name in files {
                     let size = file_size(&file_name)?;
-                    println!("File: {}, Size: {} mb", file_name, size);
+                    println!("File: {}, Size: {} mb", file_name, formated_color_by_size(size));
                 }
             } else {
                 for file_name in files {
@@ -190,7 +191,10 @@ pub fn order_top_files(file_path: &str, recursive: bool) -> Result<Vec<String>, 
         files_and_sizes.push((file_name, size));
     }
     files_and_sizes.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap());
-    let top_files: Vec<String> = files_and_sizes.iter().map(|(file, _)| file.clone()).collect();
+    let top_files: Vec<String> = files_and_sizes
+        .iter()
+        .map(|(file, _)| file.clone())
+        .collect();
     Ok(top_files)
 }
 
@@ -202,7 +206,10 @@ pub fn order_bottom_files(file_path: &str, recursive: bool) -> Result<Vec<String
         files_and_sizes.push((file_name, size));
     }
     files_and_sizes.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
-    let bottom_files: Vec<String> = files_and_sizes.iter().map(|(file, _)| file.clone()).collect();
+    let bottom_files: Vec<String> = files_and_sizes
+        .iter()
+        .map(|(file, _)| file.clone())
+        .collect();
     Ok(bottom_files)
 }
 
@@ -215,4 +222,22 @@ pub fn delete_file_type(file_path: &str, file_extensions: &[&str]) -> Result<(),
         }
     }
     Ok(())
+}
+
+fn formated_color_by_size(size: f32) -> String {
+    let size_str = convert_to_string(size); // Convertendo o tamanho para uma string
+    if size > 100.0 {
+        size_str.red().to_string()
+    } else if size > 50.0 {
+        size_str.yellow().to_string()
+    } else if size > 1.0 {
+        size_str.blue().to_string()
+    } else {
+        size_str.green().to_string()
+    }
+}
+
+
+fn convert_to_string(size: f32) -> String {
+    size.to_string()
 }
