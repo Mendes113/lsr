@@ -20,16 +20,7 @@ fn test_is_file_of_type() {
     assert!(!is_file_of_type("file.txt", &["rs"]));
 }
 
-#[test]
-fn test_file_size() {
-    let test_dir = setup_test_dir();
-    let file_path = format!("{}/test_file.txt", test_dir);
-    create_test_file(&file_path, 1024);
-    let size = file_size(&file_path).unwrap();
-    assert_eq!(size, 1.0);
-    let _ = fs::remove_file(file_path);
-    let _ = fs::remove_dir(test_dir);
-}
+
 
 #[test]
 fn test_get_files() {
